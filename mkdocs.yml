@@ -6,7 +6,7 @@ edit_uri: https://github.com/Sunse666/Vimina-docs/edit/main/docs/
 edit_uri_template: ""
 site_description: Vimina 的官方文档网站
 site_author: Sunse666
-copyright: Copyright &copy; 2024 Sunse666
+copyright: Copyright &copy; 2026 Sunse666
 remote_branch: gh-pages
 remote_name: origin
 docs_dir: docs/
@@ -185,7 +185,7 @@ theme:
         name: 暗黑主题
   font: false
   logo: logo.png
-  favicon: logo.png
+  favicon: favicon.png
   icon:
     repo: fontawesome/brands/github
     edit: material/file-edit
