@@ -144,9 +144,6 @@ theme:
   custom_dir: docs/overrides
   language: zh
   features:
-    - navigation.instant
-    - navigation.instant.prefetch
-    - navigation.instant.progress
     - navigation.tracking
     - navigation.path
     - navigation.indexes
@@ -194,13 +191,6 @@ theme:
       default: material/tag
 
 extra:
-  alternate:
-    - name: 简体中文
-      link: .
-      lang: zh
-    - name: English
-      link: en/
-      lang: en
   generator: false
   status:
     new: 最近添加
@@ -240,6 +230,16 @@ plugins:
   - search:
   - meta:
   - tags:
+  - i18n:
+      docs_structure: suffix
+      languages:
+        - locale: zh
+          name: 简体中文
+          build: true
+          default: true
+        - locale: en
+          name: English
+          build: true
 
 nav:
   - 站点主页:
