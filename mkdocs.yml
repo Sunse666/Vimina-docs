@@ -185,7 +185,7 @@ theme:
         name: 暗黑主题
   font: false
   logo: logo.png
-  favicon: favicon.png
+  favicon: favicon.ico
   icon:
     repo: fontawesome/brands/github
     edit: material/file-edit
