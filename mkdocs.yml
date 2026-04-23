@@ -263,4 +263,7 @@ nav:
 
   - 配置说明: config.md
 
-  - 对比分析: compare.md
+  - 对比分析:
+      - vs-anjian.md
+      - vs-codex.md
+      - vs-openclaw.md
