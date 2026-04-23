@@ -18,7 +18,7 @@ This document provides a detailed comparison between Vimina and OpenAI Codex's C
 
 **OpenAI Codex Computer Use** is an AI agent feature launched by OpenAI. It identifies screen screenshots through **visual models**, understands interface content, and then simulates mouse and keyboard operations to complete user-specified tasks. It is an intelligent agent based on large language models.
 
-**Core Technology:** GPT-4o visual model + AI decision-making
+**Core Technology:** GPT-5.4 + AI decision-making
 
 **Execution Mode:** Cloud AI inference, network required
 
