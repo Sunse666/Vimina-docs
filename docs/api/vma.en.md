@@ -1,16 +1,13 @@
 # VMA Script Execution
 
-Execute VMA scripts through HTTP API.
+Execute VMA scripts via HTTP API.
 
-## Execute Script
+## Execute Script Content
 
-```http
-POST /api/vma/run
-Content-Type: application/json
-
-{
-  "script": "click(100, 100)\nsleep(500)\ntype(\"Hello\")"
-}
+```bash
+curl -X POST http://localhost:51401/api/vma/run \
+  -H "Content-Type: application/json" \
+  -d '{"script": "click(100, 100)\nsleep(500)\ninput(\"Hello\")"}'
 ```
 
 **Response:**
@@ -18,17 +15,64 @@ Content-Type: application/json
 ```json
 {
   "success": true,
-  "output": "Script executed successfully"
+  "log": ["Done"],
+  "linesExecuted": 3
 }
 ```
 
 ---
 
-## Parameter Description
+## Execute Script File
+
+```bash
+curl -X POST http://localhost:51401/api/vma/runFile \
+  -H "Content-Type: application/json" \
+  -d '{"file": "C:\\path\\to\\script.vma"}'
+```
+
+---
+
+## Parameters
+
+### /api/vma/run
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | script | string | Yes | VMA script content |
+
+### /api/vma/runFile
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| file | string | Yes | VMA script file path |
+
+---
+
+## Get Script Status
+
+```bash
+curl http://localhost:51401/api/vma/status
+```
+
+**Response:**
+
+```json
+{
+  "running": true,
+  "paused": false,
+  "currentLine": 15,
+  "totalLines": 30,
+  "variables": {"x": 10, "y": 20}
+}
+```
+
+---
+
+## Stop Script
+
+```bash
+curl -X POST http://localhost:51401/api/vma/stop
+```
 
 ---
 
@@ -39,69 +83,108 @@ Content-Type: application/json
     ```python
     import requests
     
+    base = "http://localhost:51401"
+    
+    # Execute script content
     script = """
-    // Auto login example
+    // Automation example
     click(200, 150)
     sleep(100)
-    type("admin")
+    input("admin")
     click(200, 200)
     sleep(100)
-    type("password123")
+    input("password123")
     click(200, 250)
     """
     
     response = requests.post(
-        "http://localhost:8080/api/vma/run",
+        f"{base}/api/vma/run",
         json={"script": script}
     )
     print(response.json())
+    
+    # Execute script file
+    response = requests.post(
+        f"{base}/api/vma/runFile",
+        json={"file": "C:\\scripts\\login.vma"}
+    )
+    print(response.json())
+    
+    # Get script status
+    status = requests.get(f"{base}/api/vma/status").json()
+    print(status)
+    
+    # Stop script
+    requests.post(f"{base}/api/vma/stop")
     ```
 
 === "JavaScript"
 
     ```javascript
+    const base = "http://localhost:51401";
+    
+    // Execute script content
     const script = `
-    // Auto login example
+    // Automation example
     click(200, 150)
     sleep(100)
-    type("admin")
+    input("admin")
     click(200, 200)
     sleep(100)
-    type("password123")
+    input("password123")
     click(200, 250)
     `;
     
-    fetch("http://localhost:8080/api/vma/run", {
+    fetch(`${base}/api/vma/run`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({script})
     })
       .then(r => r.json())
       .then(console.log);
+    
+    // Execute script file
+    fetch(`${base}/api/vma/runFile`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({file: "C:\\\\scripts\\\\login.vma"})
+    })
+      .then(r => r.json())
+      .then(console.log);
+    
+    // Get script status
+    fetch(`${base}/api/vma/status`)
+      .then(r => r.json())
+      .then(console.log);
+    
+    // Stop script
+    fetch(`${base}/api/vma/stop`, {method: "POST"});
     ```
 
 ---
 
 ## Integration with AI Assistant
 
-VMA scripts are perfect for integration with AI assistants:
+VMA scripts are well-suited for integration with AI assistants:
 
 ```python
-# AI assistant generates script and executes
+import requests
+
+# AI assistant generates and executes script
 def ai_automate(user_request):
     # AI understands user intent, generates VMA script
     script = ai_generate_script(user_request)
     
     # Execute script
     response = requests.post(
-        "http://localhost:8080/api/vma/run",
+        "http://localhost:51401/api/vma/run",
         json={"script": script}
     )
     
     return response.json()
 
 # Example
-ai_automate("Open notepad, type Hello World, and save to desktop")
+ai_automate("Open Notepad, type Hello World, then save to desktop")
 ```
 
-See [VMA Script Syntax](../vma/index.md) for more details.
+For more VMA syntax, please refer to [VMA Script Syntax](../vma/index.md).

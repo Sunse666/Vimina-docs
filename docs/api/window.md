@@ -2,72 +2,88 @@
 
 ## 激活窗口
 
-激活指定句柄的窗口。
+通过窗口标题激活窗口（切换到前台）。
 
-```http
-GET /api/activate/{handle}
+```bash
+curl "http://localhost:51401/api/activate?title=记事本"
 ```
 
 **参数：**
 
 | 参数 | 类型 | 说明 |
 |------|------|------|
-| handle | int | 窗口句柄 |
+| title | string | 窗口标题（支持模糊匹配） |
 
-**示例：**
+---
+
+## 获取窗口列表
+
+获取所有可见窗口列表。
 
 ```bash
-curl http://localhost:8080/api/activate/12345
+curl http://localhost:51401/api/windows
 ```
+
+**响应示例：**
+
+```json
+{
+  "success": true,
+  "count": 5,
+  "windows": [
+    {
+      "hwnd": 123456,
+      "title": "记事本",
+      "className": "Notepad",
+      "processId": 1234
+    },
+    {
+      "hwnd": 789012,
+      "title": "bilibili",
+      "className": "Chrome_WidgetWin_1",
+      "processId": 5678
+    }
+  ]
+}
+```
+
+**字段说明：**
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| hwnd | int | 窗口句柄 |
+| title | string | 窗口标题 |
+| className | string | 类名 |
+| processId | int | 进程ID |
 
 ---
 
-## 关闭窗口
+## 通过窗口标题操作
 
-关闭指定句柄的窗口。
+### 扫描窗口控件
 
-```http
-GET /api/close/{handle}
+```bash
+# 扫描可交互控件（现在会保存）
+curl "http://localhost:51401/api/scanByTitle?title=记事本"
+
+# 扫描所有控件（会保存）
+curl "http://localhost:51401/api/scanAllByTitle?title=记事本"
+
+# 查看保存的数据
+curl http://localhost:51401/api/scan
 ```
 
----
+### 点击窗口控件
 
-## 最小化窗口
+```bash
+# 通过标题点击
+curl "http://localhost:51401/api/clickByTitle?title=记事本&x=500&y=300"
 
-最小化指定句柄的窗口。
+# 后台点击
+curl "http://localhost:51401/api/clickByTitle?title=记事本&x=500&y=300&useBackend=1"
 
-```http
-GET /api/minimize/{handle}
-```
-
----
-
-## 最大化窗口
-
-最大化指定句柄的窗口。
-
-```http
-GET /api/maximize/{handle}
-```
-
----
-
-## 通过标题操作
-
-也可以通过窗口标题进行操作：
-
-```http
-POST /api/window/activate
-Content-Type: application/json
-
-{"title": "记事本"}
-```
-
-```http
-POST /api/window/close
-Content-Type: application/json
-
-{"title": "记事本"}
+# 点击并切换到前台
+curl "http://localhost:51401/api/clickByTitle?title=记事本&x=500&y=300&bringToFront=1&useBackend=0"
 ```
 
 ---
@@ -79,27 +95,47 @@ Content-Type: application/json
     ```python
     import requests
     
-    # 获取窗口列表
-    windows = requests.get("http://localhost:8080/api/windows").json()
+    base = "http://localhost:51401"
     
-    # 找到记事本窗口
-    for win in windows:
-        if "记事本" in win["title"]:
-            # 激活窗口
-            requests.get(f"http://localhost:8080/api/activate/{win['handle']}")
-            break
+    # 获取窗口列表
+    windows = requests.get(f"{base}/api/windows").json()
+    
+    # 激活窗口
+    requests.get(f"{base}/api/activate?title=记事本")
+    
+    # 通过标题扫描控件
+    result = requests.get(f"{base}/api/scanByTitle?title=记事本").json()
+    
+    # 通过标题后台点击
+    requests.get(f"{base}/api/clickByTitle?title=记事本&x=500&y=300&useBackend=1")
     ```
 
 === "JavaScript"
 
     ```javascript
-    // 获取窗口列表并激活记事本
-    fetch("http://localhost:8080/api/windows")
+    const base = "http://localhost:51401";
+    
+    // 获取窗口列表
+    fetch(`${base}/api/windows`)
       .then(r => r.json())
       .then(windows => {
         const notepad = windows.find(w => w.title.includes("记事本"));
         if (notepad) {
-          fetch(`http://localhost:8080/api/activate/${notepad.handle}`);
+          console.log(notepad);
         }
       });
+    
+    // 激活窗口
+    fetch(`${base}/api/activate?title=记事本`);
+    
+    // 通过标题扫描控件
+    fetch(`${base}/api/scanByTitle?title=记事本`)
+      .then(r => r.json())
+      .then(console.log);
+    
+    // 通过标题后台点击
+    fetch(`${base}/api/clickByTitle?title=记事本&x=500&y=300&useBackend=1`);
     ```
+
+> [!TIP]
+> 浏览器窗口有保护机制，不允许通过 API 强行激活到前台。对于浏览器窗口，建议使用后台点击（useBackend=1）。

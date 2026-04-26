@@ -144,7 +144,7 @@ HTTP API settings.
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | enabled | bool | true | Enable API |
-| port | int | 8080 | Listen port |
+| port | int | 51401 | Listen port |
 | host | string | localhost | Listen address |
 | cors | bool | true | Enable CORS |
 
@@ -201,7 +201,7 @@ Hotkey settings.
   },
   "api": {
     "enabled": true,
-    "port": 8080,
+    "port": 51401,
     "host": "localhost",
     "cors": true
   },

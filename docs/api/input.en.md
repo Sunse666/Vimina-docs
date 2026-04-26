@@ -6,14 +6,8 @@
 
 Move mouse to the specified coordinates.
 
-```http
-GET /api/mouse/move/{x}/{y}
-```
-
-**Example:**
-
 ```bash
-curl http://localhost:8080/api/mouse/move/500/300
+curl http://localhost:51401/api/move/500/300
 ```
 
 ---
@@ -22,8 +16,8 @@ curl http://localhost:8080/api/mouse/move/500/300
 
 Return current mouse position.
 
-```http
-GET /api/mouse/position
+```bash
+curl http://localhost:51401/api/mouse
 ```
 
 **Response:**
@@ -37,22 +31,14 @@ GET /api/mouse/position
 
 ---
 
-### Mouse Scroll
+### Drag Operation
 
-Scroll the mouse wheel.
+Drag from start point to end point.
 
-```http
-POST /api/mouse/scroll
-Content-Type: application/json
-
-{"delta": 1}
+```bash
+# Drag from 100,100 to 500,300
+curl http://localhost:51401/api/drag/100/100/500/300
 ```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| delta | int | Scroll amount, positive for up, negative for down |
 
 ---
 
@@ -60,49 +46,12 @@ Content-Type: application/json
 
 ### Send Text
 
-Send text keystrokes.
+Simulate keyboard text input.
 
-```http
-POST /api/keys
-Content-Type: application/json
-
-{"keys": "Hello World"}
-```
-
----
-
-### Send Hotkey
-
-Send combination hotkeys.
-
-```http
-POST /api/hotkey
-Content-Type: application/json
-
-{"keys": ["ctrl", "c"]}
-```
-
-**Common Hotkeys:**
-
-| Hotkey | Description |
-|--------|-------------|
-| `["ctrl", "c"]` | Copy |
-| `["ctrl", "v"]` | Paste |
-| `["ctrl", "a"]` | Select All |
-| `["ctrl", "s"]` | Save |
-| `["alt", "f4"]` | Close Window |
-| `["ctrl", "z"]` | Undo |
-
----
-
-## Supported Key Names
-
-```
-enter, tab, escape, space, backspace, delete
-up, down, left, right, home, end, pageup, pagedown
-f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12
-ctrl, alt, shift, win
-insert, capslock, numlock, scrolllock
+```bash
+curl -X POST http://localhost:51401/api/input \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Hello World"}'
 ```
 
 ---
@@ -114,37 +63,41 @@ insert, capslock, numlock, scrolllock
     ```python
     import requests
     
-    base = "http://localhost:8080"
+    base = "http://localhost:51401"
     
     # Move mouse
-    requests.get(f"{base}/api/mouse/move/100/100")
+    requests.get(f"{base}/api/move/100/100")
     
-    # Type text
-    requests.post(f"{base}/api/keys", json={"keys": "Hello"})
+    # Get mouse position
+    pos = requests.get(f"{base}/api/mouse").json()
     
-    # Send hotkey
-    requests.post(f"{base}/api/hotkey", json={"keys": ["ctrl", "a"]})
+    # Drag operation
+    requests.get(f"{base}/api/drag/100/100/500/300")
+    
+    # Input text
+    requests.post(f"{base}/api/input", json={"text": "Hello"})
     ```
 
 === "JavaScript"
 
     ```javascript
-    const base = "http://localhost:8080";
+    const base = "http://localhost:51401";
     
     // Move mouse
-    fetch(`${base}/api/mouse/move/100/100`);
+    fetch(`${base}/api/move/100/100`);
     
-    // Type text
-    fetch(`${base}/api/keys`, {
+    // Get mouse position
+    fetch(`${base}/api/mouse`)
+      .then(r => r.json())
+      .then(console.log);
+    
+    // Drag operation
+    fetch(`${base}/api/drag/100/100/500/300`);
+    
+    // Input text
+    fetch(`${base}/api/input`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({keys: "Hello"})
-    });
-    
-    // Send hotkey
-    fetch(`${base}/api/hotkey`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({keys: ["ctrl", "a"]})
+      body: JSON.stringify({text: "Hello"})
     });
     ```

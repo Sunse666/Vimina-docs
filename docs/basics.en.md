@@ -32,9 +32,9 @@ Vimina supports background clicking, which means you can click controls without 
 You can achieve background clicking through HTTP API:
 
 ```bash
-curl -X POST http://localhost:8080/api/clickAt \
+curl -X POST http://localhost:51401/api/clickAt \
   -H "Content-Type: application/json" \
-  -d '{"x": 100, "y": 200, "background": true}'
+  -d '{"x": 100, "y": 200, "useBackend": true}'
 ```
 
 ## Next Steps

@@ -2,72 +2,88 @@
 
 ## Activate Window
 
-Activate the window with the specified handle.
+Activate window by title (bring to foreground).
 
-```http
-GET /api/activate/{handle}
+```bash
+curl "http://localhost:51401/api/activate?title=Notepad"
 ```
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| handle | int | Window handle |
+| title | string | Window title (supports fuzzy matching) |
 
-**Example:**
+---
+
+## Get Window List
+
+Get all visible windows list.
 
 ```bash
-curl http://localhost:8080/api/activate/12345
+curl http://localhost:51401/api/windows
 ```
+
+**Response Example:**
+
+```json
+{
+  "success": true,
+  "count": 5,
+  "windows": [
+    {
+      "hwnd": 123456,
+      "title": "Notepad",
+      "className": "Notepad",
+      "processId": 1234
+    },
+    {
+      "hwnd": 789012,
+      "title": "bilibili",
+      "className": "Chrome_WidgetWin_1",
+      "processId": 5678
+    }
+  ]
+}
+```
+
+**Field Description:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| hwnd | int | Window handle |
+| title | string | Window title |
+| className | string | Class name |
+| processId | int | Process ID |
 
 ---
 
-## Close Window
+## Operate by Window Title
 
-Close the window with the specified handle.
+### Scan Window Controls
 
-```http
-GET /api/close/{handle}
+```bash
+# Scan interactive controls (will save)
+curl "http://localhost:51401/api/scanByTitle?title=Notepad"
+
+# Scan all controls (will save)
+curl "http://localhost:51401/api/scanAllByTitle?title=Notepad"
+
+# View saved data
+curl http://localhost:51401/api/scan
 ```
 
----
+### Click Window Controls
 
-## Minimize Window
+```bash
+# Click by title
+curl "http://localhost:51401/api/clickByTitle?title=Notepad&x=500&y=300"
 
-Minimize the window with the specified handle.
+# Background click
+curl "http://localhost:51401/api/clickByTitle?title=Notepad&x=500&y=300&useBackend=1"
 
-```http
-GET /api/minimize/{handle}
-```
-
----
-
-## Maximize Window
-
-Maximize the window with the specified handle.
-
-```http
-GET /api/maximize/{handle}
-```
-
----
-
-## Operate by Title
-
-You can also operate by window title:
-
-```http
-POST /api/window/activate
-Content-Type: application/json
-
-{"title": "Notepad"}
-```
-
-```http
-POST /api/window/close
-Content-Type: application/json
-
-{"title": "Notepad"}
+# Click and bring to foreground
+curl "http://localhost:51401/api/clickByTitle?title=Notepad&x=500&y=300&bringToFront=1&useBackend=0"
 ```
 
 ---
@@ -79,27 +95,47 @@ Content-Type: application/json
     ```python
     import requests
     
-    # Get window list
-    windows = requests.get("http://localhost:8080/api/windows").json()
+    base = "http://localhost:51401"
     
-    # Find notepad window
-    for win in windows:
-        if "Notepad" in win["title"]:
-            # Activate window
-            requests.get(f"http://localhost:8080/api/activate/{win['handle']}")
-            break
+    # Get window list
+    windows = requests.get(f"{base}/api/windows").json()
+    
+    # Activate window
+    requests.get(f"{base}/api/activate?title=Notepad")
+    
+    # Scan controls by title
+    result = requests.get(f"{base}/api/scanByTitle?title=Notepad").json()
+    
+    # Background click by title
+    requests.get(f"{base}/api/clickByTitle?title=Notepad&x=500&y=300&useBackend=1")
     ```
 
 === "JavaScript"
 
     ```javascript
-    // Get window list and activate notepad
-    fetch("http://localhost:8080/api/windows")
+    const base = "http://localhost:51401";
+    
+    // Get window list
+    fetch(`${base}/api/windows`)
       .then(r => r.json())
       .then(windows => {
         const notepad = windows.find(w => w.title.includes("Notepad"));
         if (notepad) {
-          fetch(`http://localhost:8080/api/activate/${notepad.handle}`);
+          console.log(notepad);
         }
       });
+    
+    // Activate window
+    fetch(`${base}/api/activate?title=Notepad`);
+    
+    // Scan controls by title
+    fetch(`${base}/api/scanByTitle?title=Notepad`)
+      .then(r => r.json())
+      .then(console.log);
+    
+    // Background click by title
+    fetch(`${base}/api/clickByTitle?title=Notepad&x=500&y=300&useBackend=1`);
     ```
+
+> [!TIP]
+> Browser windows have protection mechanisms that don't allow forced activation to foreground via API. For browser windows, it's recommended to use background click (useBackend=1).

@@ -2,15 +2,12 @@
 
 通过 HTTP API 执行 VMA 脚本。
 
-## 执行脚本
+## 执行脚本内容
 
-```http
-POST /api/vma/run
-Content-Type: application/json
-
-{
-  "script": "click(100, 100)\nsleep(500)\ntype(\"Hello\")"
-}
+```bash
+curl -X POST http://localhost:51401/api/vma/run \
+  -H "Content-Type: application/json" \
+  -d '{"script": "click(100, 100)\nsleep(500)\ninput(\"Hello\")"}'
 ```
 
 **响应：**
@@ -18,17 +15,64 @@ Content-Type: application/json
 ```json
 {
   "success": true,
-  "output": "Script executed successfully"
+  "log": ["完成"],
+  "linesExecuted": 3
 }
+```
+
+---
+
+## 执行脚本文件
+
+```bash
+curl -X POST http://localhost:51401/api/vma/runFile \
+  -H "Content-Type: application/json" \
+  -d '{"file": "C:\\path\\to\\script.vma"}'
 ```
 
 ---
 
 ## 参数说明
 
+### /api/vma/run
+
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
 | script | string | 是 | VMA 脚本内容 |
+
+### /api/vma/runFile
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| file | string | 是 | VMA 脚本文件路径 |
+
+---
+
+## 获取脚本状态
+
+```bash
+curl http://localhost:51401/api/vma/status
+```
+
+**响应：**
+
+```json
+{
+  "running": true,
+  "paused": false,
+  "currentLine": 15,
+  "totalLines": 30,
+  "variables": {"x": 10, "y": 20}
+}
+```
+
+---
+
+## 停止脚本
+
+```bash
+curl -X POST http://localhost:51401/api/vma/stop
+```
 
 ---
 
@@ -39,45 +83,82 @@ Content-Type: application/json
     ```python
     import requests
     
+    base = "http://localhost:51401"
+    
+    # 执行脚本内容
     script = """
-    // 自动登录示例
+    // 自动化示例
     click(200, 150)
     sleep(100)
-    type("admin")
+    input("admin")
     click(200, 200)
     sleep(100)
-    type("password123")
+    input("password123")
     click(200, 250)
     """
     
     response = requests.post(
-        "http://localhost:8080/api/vma/run",
+        f"{base}/api/vma/run",
         json={"script": script}
     )
     print(response.json())
+    
+    # 执行脚本文件
+    response = requests.post(
+        f"{base}/api/vma/runFile",
+        json={"file": "C:\\scripts\\login.vma"}
+    )
+    print(response.json())
+    
+    # 获取脚本状态
+    status = requests.get(f"{base}/api/vma/status").json()
+    print(status)
+    
+    # 停止脚本
+    requests.post(f"{base}/api/vma/stop")
     ```
 
 === "JavaScript"
 
     ```javascript
+    const base = "http://localhost:51401";
+    
+    // 执行脚本内容
     const script = `
-    // 自动登录示例
+    // 自动化示例
     click(200, 150)
     sleep(100)
-    type("admin")
+    input("admin")
     click(200, 200)
     sleep(100)
-    type("password123")
+    input("password123")
     click(200, 250)
     `;
     
-    fetch("http://localhost:8080/api/vma/run", {
+    fetch(`${base}/api/vma/run`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({script})
     })
       .then(r => r.json())
       .then(console.log);
+    
+    // 执行脚本文件
+    fetch(`${base}/api/vma/runFile`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({file: "C:\\\\scripts\\\\login.vma"})
+    })
+      .then(r => r.json())
+      .then(console.log);
+    
+    // 获取脚本状态
+    fetch(`${base}/api/vma/status`)
+      .then(r => r.json())
+      .then(console.log);
+    
+    // 停止脚本
+    fetch(`${base}/api/vma/stop`, {method: "POST"});
     ```
 
 ---
@@ -87,6 +168,8 @@ Content-Type: application/json
 VMA 脚本非常适合与 AI 助手集成：
 
 ```python
+import requests
+
 # AI 助手生成脚本并执行
 def ai_automate(user_request):
     # AI 理解用户意图，生成 VMA 脚本
@@ -94,7 +177,7 @@ def ai_automate(user_request):
     
     # 执行脚本
     response = requests.post(
-        "http://localhost:8080/api/vma/run",
+        "http://localhost:51401/api/vma/run",
         json={"script": script}
     )
     

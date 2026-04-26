@@ -4,13 +4,13 @@ icon: material/api
 
 # HTTP API
 
-Vimina 提供完整的 HTTP API 接口，默认监听 `http://localhost:8080`。
+Vimina 提供完整的 HTTP API 接口，默认监听 `http://localhost:51401`。
 
 ## 概述
 
 API 采用 RESTful 风格设计，支持以下功能：
 
-- **基础操作** - 获取控件列表、截图、窗口列表等
+- **基础操作** - 控件扫描、截图、窗口列表等
 - **点击操作** - 坐标点击、标签点击、后台点击等
 - **窗口管理** - 激活、关闭、最小化、最大化窗口
 - **鼠标键盘** - 鼠标移动、键盘输入、快捷键等
@@ -20,7 +20,7 @@ API 采用 RESTful 风格设计，支持以下功能：
 
 | 项目 | 值 |
 |------|-----|
-| 基础 URL | `http://localhost:8080` |
+| 基础 URL | `http://localhost:51401` |
 | 数据格式 | JSON |
 | 字符编码 | UTF-8 |
 | CORS | 支持 |
@@ -51,16 +51,25 @@ API 采用 RESTful 风格设计，支持以下功能：
 === "curl"
 
     ```bash
-    # 获取控件列表
-    curl http://localhost:8080/api/controls
+    # 显示标签并扫描
+    curl -X POST http://localhost:51401/api/show
+    
+    # 获取扫描结果（仅可交互控件）
+    curl http://localhost:51401/api/scan
+    
+    # 扫描所有控件（包括文本、图片等）
+    curl http://localhost:51401/api/scanAll
+    
+    # 通过窗口标题扫描
+    curl "http://localhost:51401/api/scanByTitle?title=记事本"
     
     # 点击坐标
-    curl http://localhost:8080/api/click/100/200
+    curl http://localhost:51401/api/click/100/200
     
     # 发送文本
-    curl -X POST http://localhost:8080/api/keys \
+    curl -X POST http://localhost:51401/api/input \
       -H "Content-Type: application/json" \
-      -d '{"keys": "Hello World"}'
+      -d '{"text": "Hello World"}'
     ```
 
 === "Python"
@@ -68,26 +77,39 @@ API 采用 RESTful 风格设计，支持以下功能：
     ```python
     import requests
     
-    base_url = "http://localhost:8080"
+    base_url = "http://localhost:51401"
     
-    # 获取控件列表
-    response = requests.get(f"{base_url}/api/controls")
-    controls = response.json()
+    # 显示标签并扫描
+    requests.post(f"{base_url}/api/show")
+    
+    # 获取扫描结果（仅可交互控件）
+    result = requests.get(f"{base_url}/api/scan").json()
+    
+    # 扫描所有控件（适合AI理解窗口内容）
+    result = requests.get(f"{base_url}/api/scanAll").json()
     
     # 点击坐标
     requests.get(f"{base_url}/api/click/100/200")
     
     # 发送文本
-    requests.post(f"{base_url}/api/keys", json={"keys": "Hello World"})
+    requests.post(f"{base_url}/api/input", json={"text": "Hello World"})
     ```
 
 === "JavaScript"
 
     ```javascript
-    const baseUrl = "http://localhost:8080";
+    const baseUrl = "http://localhost:51401";
     
-    // 获取控件列表
-    fetch(`${baseUrl}/api/controls`)
+    // 显示标签并扫描
+    fetch(`${baseUrl}/api/show`, {method: "POST"});
+    
+    // 获取扫描结果
+    fetch(`${baseUrl}/api/scan`)
+      .then(r => r.json())
+      .then(console.log);
+    
+    // 扫描所有控件
+    fetch(`${baseUrl}/api/scanAll`)
       .then(r => r.json())
       .then(console.log);
     
@@ -95,10 +117,10 @@ API 采用 RESTful 风格设计，支持以下功能：
     fetch(`${baseUrl}/api/click/100/200`);
     
     // 发送文本
-    fetch(`${baseUrl}/api/keys`, {
+    fetch(`${baseUrl}/api/input`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({keys: "Hello World"})
+      body: JSON.stringify({text: "Hello World"})
     });
     ```
 
@@ -106,7 +128,7 @@ API 采用 RESTful 风格设计，支持以下功能：
 
 请查看以下章节了解详细的 API 文档：
 
-- [基础操作](basic.md) - 控件列表、截图、窗口列表
+- [基础操作](basic.md) - 控件扫描、截图、窗口列表
 - [点击操作](click.md) - 各种点击方式
 - [窗口管理](window.md) - 窗口操作
 - [鼠标键盘](input.md) - 输入控制

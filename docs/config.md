@@ -144,7 +144,7 @@ HTTP API 设置。
 | 属性 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
 | enabled | bool | true | 是否启用 API |
-| port | int | 8080 | 监听端口 |
+| port | int | 51401 | 监听端口 |
 | host | string | localhost | 监听地址 |
 | cors | bool | true | 是否启用 CORS |
 
@@ -201,7 +201,7 @@ HTTP API 设置。
   },
   "api": {
     "enabled": true,
-    "port": 8080,
+    "port": 51401,
     "host": "localhost",
     "cors": true
   },

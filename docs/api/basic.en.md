@@ -1,63 +1,137 @@
 # Basic Operations
 
-## Get Control List
+## Show Labels and Scan
 
-Get all interactive controls in the current active window.
+Show labels and scan controls in the current active window.
 
-```http
-GET /api/controls
+```bash
+curl -X POST http://localhost:51401/api/show
+```
+
+---
+
+## Hide Labels
+
+Hide all displayed labels.
+
+```bash
+curl -X POST http://localhost:51401/api/hide
+```
+
+---
+
+## Get Scan Results
+
+Get the results of the most recent scan (interactive controls only).
+
+```bash
+curl http://localhost:51401/api/scan
 ```
 
 **Response Example:**
 
 ```json
-[
-  {
-    "tag": "AB",
-    "name": "OK",
-    "controlType": "Button",
-    "className": "Button",
-    "bounds": {
-      "x": 100,
-      "y": 200,
-      "width": 80,
-      "height": 30
-    },
-    "isEnabled": true,
-    "isOffscreen": false
-  }
-]
+{
+  "success": true,
+  "timestamp": "2024-01-01T12:00:00",
+  "window": {
+    "title": "Notepad",
+    "className": "Notepad",
+    "handle": 123456
+  },
+  "summary": {
+    "totalControls": 15,
+    "description": "Window 'Notepad' has 15 interactive controls"
+  },
+  "controls": [
+    {
+      "name": "File",
+      "type": "MenuItem",
+      "typeDesc": "Menu Item",
+      "isInteractive": true,
+      "x": 10,
+      "y": 30,
+      "width": 50,
+      "height": 20,
+      "centerX": 35,
+      "centerY": 40,
+      "label": "DJ"
+    }
+  ]
+}
 ```
-
-**Field Description:**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| tag | string | Control tag (two letters) |
-| name | string | Control name |
-| controlType | string | Control type |
-| className | string | Class name |
-| bounds | object | Bounding rectangle |
-| isEnabled | bool | Is enabled |
-| isOffscreen | bool | Is offscreen |
 
 ---
 
-## Screenshot
+## Scan All Controls
 
-Take a screenshot of the current screen.
-
-```http
-GET /api/screenshot
-```
-
-**Response:** PNG image
-
-**Example:**
+Scan all controls, including non-interactive elements like text and images (suitable for AI to understand window content).
 
 ```bash
-curl http://localhost:8080/api/screenshot -o screenshot.png
+curl http://localhost:51401/api/scanAll
 ```
+
+**Response Example:**
+
+```json
+{
+  "success": true,
+  "summary": {
+    "totalControls": 45,
+    "byType": {
+      "Text": 20,
+      "Button": 5,
+      "Edit": 3,
+      "Image": 2,
+      "Pane": 15
+    }
+  },
+  "controls": [...]
+}
+```
+
+---
+
+## Scan by Window Title
+
+### Scan Interactive Controls
+
+```bash
+curl "http://localhost:51401/api/scanByTitle?title=Notepad"
+```
+
+Or POST method:
+
+```bash
+curl -X POST http://localhost:51401/api/scanByTitle \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Notepad"}'
+```
+
+### Scan All Controls
+
+```bash
+curl "http://localhost:51401/api/scanAllByTitle?title=Notepad"
+```
+
+Or POST method:
+
+```bash
+curl -X POST http://localhost:51401/api/scanAllByTitle \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Notepad"}'
+```
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| title | string | Yes | Window title (supports fuzzy matching) |
+
+> [!TIP]
+> - `/api/scan` and `/api/scanByTitle` only return interactive controls (buttons, input fields, etc.)
+> - `/api/scanAll` and `/api/scanAllByTitle` return all controls, including non-interactive elements like text and images
+> - All scan results are saved to the `data/scan_result.json` file
 
 ---
 
@@ -65,38 +139,60 @@ curl http://localhost:8080/api/screenshot -o screenshot.png
 
 Get all visible windows list.
 
-```http
-GET /api/windows
+```bash
+curl http://localhost:51401/api/windows
 ```
 
 **Response Example:**
 
 ```json
-[
-  {
-    "handle": 12345,
-    "title": "Notepad",
-    "className": "Notepad",
-    "bounds": {
-      "x": 100,
-      "y": 100,
-      "width": 800,
-      "height": 600
+{
+  "success": true,
+  "count": 5,
+  "windows": [
+    {
+      "hwnd": 123456,
+      "title": "Notepad",
+      "className": "Notepad",
+      "processId": 1234
     },
-    "isActive": true
-  }
-]
+    {
+      "hwnd": 789012,
+      "title": "bilibili",
+      "className": "Chrome_WidgetWin_1",
+      "processId": 5678
+    }
+  ]
+}
 ```
 
 **Field Description:**
 
 | Field | Type | Description |
 |-------|------|-------------|
-| handle | int | Window handle |
+| hwnd | int | Window handle |
 | title | string | Window title |
 | className | string | Class name |
-| bounds | object | Bounding rectangle |
-| isActive | bool | Is active window |
+| processId | int | Process ID |
+
+---
+
+## Get Mouse Position
+
+Return current mouse position.
+
+```bash
+curl http://localhost:51401/api/mouse
+```
+
+**Response:**
+
+```json
+{
+  "x": 500,
+  "y": 300
+}
+```
 
 ---
 
@@ -104,8 +200,8 @@ GET /api/windows
 
 Get program running status.
 
-```http
-GET /api/status
+```bash
+curl http://localhost:51401/api/status
 ```
 
 **Response Example:**
@@ -113,26 +209,82 @@ GET /api/status
 ```json
 {
   "running": true,
-  "version": "1.0.0",
-  "uptime": 3600,
-  "controlsCount": 42
+  "hasData": true,
+  "lastScan": "2024-01-01T12:00:00",
+  "mousePosition": {"x": 500, "y": 300},
+  "screen": [1920, 1080]
 }
 ```
 
 ---
 
-## Health Check
+## Raw Data Endpoints
 
-Check if service is running.
+### Get Raw Scan Results
 
-```http
-GET /api/health
+```bash
+curl http://localhost:51401/api/raw/scan
 ```
 
-**Response:**
+### Get Raw Label Mapping
 
-```json
-{
-  "status": "ok"
-}
+```bash
+curl http://localhost:51401/api/raw/labels
 ```
+
+---
+
+## Usage Examples
+
+=== "Python"
+
+    ```python
+    import requests
+    
+    base = "http://localhost:51401"
+    
+    # Show labels and scan
+    requests.post(f"{base}/api/show")
+    
+    # Get scan results (interactive controls only)
+    result = requests.get(f"{base}/api/scan").json()
+    
+    # Scan all controls (suitable for AI to understand window content)
+    result = requests.get(f"{base}/api/scanAll").json()
+    
+    # Scan by title
+    result = requests.get(f"{base}/api/scanByTitle?title=Notepad").json()
+    result = requests.get(f"{base}/api/scanAllByTitle?title=Notepad").json()
+    
+    # Get window list
+    windows = requests.get(f"{base}/api/windows").json()
+    ```
+
+=== "JavaScript"
+
+    ```javascript
+    const base = "http://localhost:51401";
+    
+    // Show labels and scan
+    fetch(`${base}/api/show`, {method: "POST"});
+    
+    // Get scan results
+    fetch(`${base}/api/scan`)
+      .then(r => r.json())
+      .then(console.log);
+    
+    // Scan all controls
+    fetch(`${base}/api/scanAll`)
+      .then(r => r.json())
+      .then(console.log);
+    
+    // Scan by title
+    fetch(`${base}/api/scanByTitle?title=Notepad`)
+      .then(r => r.json())
+      .then(console.log);
+    
+    // Get window list
+    fetch(`${base}/api/windows`)
+      .then(r => r.json())
+      .then(console.log);
+    ```
