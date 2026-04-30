@@ -66,12 +66,17 @@ curl http://localhost:51401/api/windows
 # 扫描可交互控件（现在会保存）
 curl "http://localhost:51401/api/scanByTitle?title=记事本"
 
-# 扫描所有控件（会保存）
+# 扫描所有控件（会保存到 scan_result.json、scan_result_lite.json 和 scan_result_tree.json）
 curl "http://localhost:51401/api/scanAllByTitle?title=记事本"
 
 # 查看保存的数据
 curl http://localhost:51401/api/scan
 ```
+
+> [!NOTE]
+> - `scan_result_lite.json`：简化格式，包含标签、类型、坐标
+> - `scan_result_tree.json`：控件树结构（仅name/x/y/children），需与lite文件配合使用
+> - AI应同时读取两个文件：lite用于点击坐标，tree用于理解界面层级
 
 ### 点击窗口控件
 

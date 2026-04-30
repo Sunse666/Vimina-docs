@@ -132,6 +132,8 @@ curl -X POST http://localhost:51401/api/scanAllByTitle \
 > - `/api/scan` and `/api/scanByTitle` only return interactive controls (buttons, input fields, etc.)
 > - `/api/scanAll` and `/api/scanAllByTitle` return all controls, including non-interactive elements like text and images
 > - All scan results are saved to the `data/scan_result.json` file
+> - `/api/scanAllByTitle` also generates `data/scan_result_lite.json` (labels/types/coordinates) and `data/scan_result_tree.json` (control tree)
+> - AI should read both lite and tree files: lite for click coordinates, tree for layout understanding
 
 ---
 

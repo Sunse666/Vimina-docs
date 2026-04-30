@@ -132,6 +132,8 @@ curl -X POST http://localhost:51401/api/scanAllByTitle \
 > - `/api/scan` 和 `/api/scanByTitle` 只返回可交互控件（按钮、输入框等）
 > - `/api/scanAll` 和 `/api/scanAllByTitle` 返回所有控件，包括文本、图片等不可交互元素
 > - 所有扫描结果都会保存到 `data/scan_result.json` 文件中
+> - `/api/scanAllByTitle` 还会生成 `data/scan_result_lite.json`（标签/类型/坐标）和 `data/scan_result_tree.json`（控件树）
+> - AI应同时读取lite和tree两个文件：lite用于点击坐标，tree用于理解界面层级
 
 ---
 

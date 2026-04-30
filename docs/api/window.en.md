@@ -66,12 +66,17 @@ curl http://localhost:51401/api/windows
 # Scan interactive controls (will save)
 curl "http://localhost:51401/api/scanByTitle?title=Notepad"
 
-# Scan all controls (will save)
+# Scan all controls (will save to scan_result.json, scan_result_lite.json and scan_result_tree.json)
 curl "http://localhost:51401/api/scanAllByTitle?title=Notepad"
 
 # View saved data
 curl http://localhost:51401/api/scan
 ```
+
+> [!NOTE]
+> - `scan_result_lite.json`: Simplified format with labels, types, coordinates
+> - `scan_result_tree.json`: Control tree structure (only name/x/y/children), use with lite file
+> - AI should read both files: lite for click coordinates, tree for layout understanding
 
 ### Click Window Controls
 
