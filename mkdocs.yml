@@ -1,10 +1,10 @@
-site_name: Vimina
+site_name: CJForm
 site_url: ""
-repo_url: https://github.com/Sunse666/Vimina
-repo_name: Sunse666/Vimina
-edit_uri: https://github.com/Sunse666/Vimina-docs/edit/main/docs/
+repo_url: https://github.com/Sunse666/CjForm
+repo_name: Sunse666/CjForm
+edit_uri: https://github.com/Sunse666/CjForm/edit/main/docs/docs/
 edit_uri_template: ""
-site_description: Vimina 的官方文档网站
+site_description: CJForm 的官方文档网站
 site_author: Sunse666
 copyright: Copyright &copy; 2026 Sunse666
 remote_branch: gh-pages
@@ -16,7 +16,7 @@ use_directory_urls: true
 strict: false
 
 markdown_extensions:
-  ###### Python Markdown 配置（markdown 基础语法）
+  ###### Python Markdown 配置
 
   - admonition
   - meta
@@ -27,7 +27,7 @@ markdown_extensions:
   - toc:
       marker: ""
       anchorlink: false
-      permalink: ¶
+      permalink: "&para;"
       permalink_title: ""
       permalink_leading: false
       baselevel: 1
@@ -38,7 +38,7 @@ markdown_extensions:
         kwds:
           case: lower
 
-  ###### PyMdown Extensions 配置（markdown 扩展语法）
+  ###### PyMdown Extensions 配置
 
   - pymdownx.extra
 
@@ -102,11 +102,11 @@ markdown_extensions:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
-      default_lang: python
+      default_lang: cj
 
   - pymdownx.magiclink:
       user: "Sunse666"
-      repo: "Vimina"
+      repo: "CjForm"
       hide_protocol: true
       repo_url_shorthand: true
       repo_url_shortener: true
@@ -161,19 +161,19 @@ theme:
     - content.code.annotate
     - content.tabs.link
     - content.tooltips
-  palette: # 界面整体样式
-    - media: "(prefers-color-scheme)" # 系统主题
+  palette:
+    - media: "(prefers-color-scheme)"
       toggle:
         icon: material/theme-light-dark
         name: 系统主题
-    - media: "(prefers-color-scheme: light)" # 亮色主题
+    - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: white
       accent: light blue
       toggle:
         icon: material/weather-sunny
         name: 明亮主题
-    - media: "(prefers-color-scheme: dark)" # 暗色主题
+    - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: black
       accent: yellow
@@ -181,8 +181,6 @@ theme:
         icon: material/weather-night
         name: 暗黑主题
   font: false
-  logo: logo.png
-  favicon: favicon.ico
   icon:
     repo: fontawesome/brands/github
     edit: material/file-edit
@@ -200,7 +198,7 @@ extra:
     _:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/Sunse666/Vimina/
+      link: https://github.com/Sunse666/CjForm/
       name: GitHub
 
 extra_javascript:
@@ -222,9 +220,9 @@ extra_javascript:
 extra_css:
   - https://xiaokang2022.github.io/css/extra.css
   - stylesheets/extra.css
-  - https://unpkg.com/katex@latest/dist/katex.min.css # 数学表达式
-  - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css # 图标字体库
-  - https://cdnjs.cloudflare.com/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css # 设置字体（霞鹜文楷）
+  - https://unpkg.com/katex@latest/dist/katex.min.css
+  - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css
+  - https://cdnjs.cloudflare.com/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css
 
 plugins:
   - search:
@@ -246,24 +244,11 @@ nav:
       - index.md
       - 快速开始: getting-started.md
       - 基本使用: basics.md
+      - 架构说明: architecture.md
 
-  - HTTP API:
-      - api/index.md
-      - 基础操作: api/basic.md
-      - 点击操作: api/click.md
-      - 窗口管理: api/window.md
-      - 鼠标键盘: api/input.md
-      - VMA脚本: api/vma.md
+  - 控件参考:
+      - controls.md
 
-  - VMA脚本:
-      - vma/index.md
-      - 语法参考: vma/syntax.md
-      - 内置函数: vma/functions.md
-      - 脚本示例: vma/examples.md
-
-  - 配置说明: config.md
-
-  - 对比分析:
-      - vs-anjian.md
-      - vs-codex.md
-      - vs-openclaw.md
+  - 主题与样式:
+      - theme.md
+      - stylesheet.md

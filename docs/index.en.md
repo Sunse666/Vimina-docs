@@ -2,53 +2,61 @@
 icon: material/home
 ---
 
-# Vimina
+# CJForm
 
 !!! tip "Tip"
 
-    Vimina is a Windows desktop automation tool inspired by [Vimium](https://github.com/philc/vimium).
+    CJForm is a native Windows UI library for the Cangjie language. All widgets are custom-drawn. Clone and run.
 
-    - [x] You can press ++left++ and ++right++ to navigate between pages!
-    - [x] You can click the search bar at the top or press <kbd>/</kbd> to quickly find content!
-    - [x] You can click the theme button at the top to switch the website theme!
+    - [x] Press ++left++ and ++right++ to navigate between pages!
+    - [x] Click the search bar at the top or press <kbd>/</kbd> to quickly find content!
+    - [x] Click the theme button at the top to switch the website theme!
 
     Enjoy reading! :heart:
 
 ## Introduction
 
-Vimina is a Windows desktop automation tool. Based on the **FlaUI** automation framework, it identifies window controls through the **UIA3** protocol and generates letter labels for each interactive control. You can click any button, link, or input field precisely just by typing on the keyboard.
+CJForm is a native Windows UI library for the **Cangjie language**. It bridges to Win32 API / GDI+ through a C++ layer, with all widgets custom-drawn. No third-party UI framework dependencies.
 
-It also provides a complete **HTTP API** interface, supporting integration with AI assistants and automation scripts.
+Features Dark / Light dual themes, a declarative StyleSheet system, a complete layout engine, and an animation system, covering 25+ common widgets.
 
 ## Core Features
 
-=== "Smart Labels"
+=== "Custom-Drawn Widgets"
 
-    Automatically identifies controls based on UIA3 protocol, generates two-letter labels, resolution-independent, window position changes do not affect operations.
+    25+ widget types, all custom-drawn via GDI+. No reliance on native Windows controls.
 
-=== "HTTP API"
+=== "Dual Themes"
 
-    Complete RESTful interface, supports CORS, easy to integrate with AI assistants and automation scripts.
+    Built-in Dark / Light themes with runtime switching. All widget colors respond automatically.
 
-=== "VMA Script"
+=== "Declarative Styles"
 
-    Concise scripting language, supports variables, functions, loops, etc., can be compiled to standalone exe files.
+    StyleSheet system similar to CSS classes — define once, reuse everywhere.
 
-=== "Background Operations"
+=== "Layout Engine"
 
-    Operate background windows without moving the mouse, does not affect foreground work.
+    VBox / HBox flexible layout with LayoutFrame for precise control and window resizing.
+
+=== "Animation System"
+
+    Easing functions + color interpolation for smooth hover and click animations.
+
+=== "Data Views"
+
+    ListView, TreeView, TableView, TabView for full data display capabilities.
 
 ## Quick Links
 
 <div class="grid cards" markdown>
 
--   :fontawesome-solid-download: **Download Latest Version**
+-   :fontawesome-solid-rocket: **Getting Started**
 
     ---
 
-    Download the latest version from GitHub Releases, extract and run
+    Clone and run your first CJForm app in 10 minutes
 
-    [:octicons-arrow-right-24: Download](https://github.com/Sunse666/Vimina/releases)
+    [:octicons-arrow-right-24: Get Started](getting-started.md)
 
 -   :fontawesome-brands-github: **GitHub Repository**
 
@@ -56,45 +64,43 @@ It also provides a complete **HTTP API** interface, supporting integration with 
 
     View source code, submit issues or PRs
 
-    [:octicons-arrow-right-24: View](https://github.com/Sunse666/Vimina)
+    [:octicons-arrow-right-24: View on GitHub](https://github.com/Sunse666/CjForm)
 
--   :material-api: **HTTP API Docs**
-
-    ---
-
-    Complete API endpoints and examples
-
-    [:octicons-arrow-right-24: View Docs](api/index.md)
-
--   :material-script-text: **VMA Script Syntax**
+-   :material-widgets: **Widget Reference**
 
     ---
 
-    Detailed syntax and examples
+    Complete API and examples for 25+ widgets
 
-    [:octicons-arrow-right-24: View Syntax](vma/index.md)
+    [:octicons-arrow-right-24: View Widgets](controls.md)
+
+-   :material-palette: **Theme System**
+
+    ---
+
+    Dark / Light theme configuration and customization
+
+    [:octicons-arrow-right-24: View Themes](theme.md)
 
 </div>
 
 ## System Requirements
 
-- OS: **Windows 10 / 11**
-- Runtime: **.NET Framework 4.6.2+**
-- No installation required, extract and run
+- OS: **Windows 10 / 11 64-bit**
+- Toolchain: **Cangjie toolchain (cjc >= 1.0.5)**
+- No extra configuration needed — clone and run
 
-## Getting Started
+## Quick Start
 
 ```bash
-# 1. Download and extract
-# 2. Run Vimina.exe
-# 3. Open any application window
-# 4. Press Alt+F to show control labels
-# 5. Type label letters to click controls
+git clone https://github.com/Sunse666/CjForm.git MyApp
+cd MyApp
+cjpm run
 ```
 
 <div align="center" markdown>
-[Quick Start](getting-started.md){ .md-button }
+[Getting Started](getting-started.md){ .md-button }
 [Basic Usage](basics.md){ .md-button }
-[HTTP API](api/index.md){ .md-button }
-[VMA Script](vma/index.md){ .md-button }
+[Widget Reference](controls.md){ .md-button }
+[Architecture](architecture.md){ .md-button }
 </div>
